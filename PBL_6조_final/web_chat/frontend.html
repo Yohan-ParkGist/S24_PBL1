@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>paper company</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>paper company</h1>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <!-- 대화 내용이 여기에 추가됩니다 -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatPrompt" placeholder="입력" onkeypress="handleKeyPress(event)" />
+            <button id="fileUploadButton" onclick="document.getElementById('fileInput').click()">📁</button>
+            <button onclick="uploadPrompt()">⏎</button>
+        </div>
+        <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload()" />
+    </div>
+
+    <script>
+        function appendMessage(role, message) {
+            const chatBox = document.getElementById('chatBox');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', role);
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 아래로 이동
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                uploadPrompt();
+            }
+        }
+
+        function uploadPrompt() {
+            const prompt = document.getElementById('chatPrompt').value;
+            if (prompt.trim()) {
+                appendMessage('user', prompt);
+                
+                fetch('http://localhost:5000/upload_prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt: prompt })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    appendMessage('system', data.message);
+                })
+                .catch(error => console.error('Error:', error));
+
+                document.getElementById('chatPrompt').value = '';
+            }
+        }
+
+        function handleFileUpload() {
+            const input = document.getElementById('fileInput');
+            if (input.files.length > 0) {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                fetch('/upload_file', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    appendMessage('user', `파일 업로드: ${file.name}`);
+                    appendMessage('system', data.message);
+                    handleImagePromptUpload();
+                })
+                .catch(error => console.error(error));
+            }
+        }
+
+        function handleImagePromptUpload() {
+            const chatBox = document.getElementById('chatBox');
+            const promptSection = document.createElement('div');
+            promptSection.innerHTML = `
+                <label for="imagePrompt">이미지 프롬프트 입력: </label>
+                <input type="text" id="imagePrompt" />
+                <label for="imageFileName">파일 이름 입력: </label>
+                <input type="text" id="imageFileName" />
+                <button onclick="generateImage()">생성</button>
+                <button onclick="analyzeImage()">분석</button>
+            `;
+            chatBox.appendChild(promptSection);
+        }
+
+        function generateImage() {
+            const prompt = document.getElementById('imagePrompt').value;
+            const fileName = document.getElementById('imageFileName').value;
+
+            fetch('/generate_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    file_name: fileName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage('user', `이미지 생성: ${prompt}`);
+                appendMessage('system', data.message);
+            })
+            .catch(error => console.error(error));
+        }
+
+        function analyzeImage() {
+            const fileName = document.getElementById('imageFileName').value;
+            fetch('/analyze_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    file_name: fileName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage('user', `이미지 분석 파일 이름: ${fileName}`);
+                appendMessage('system', data.message);
+            })
+            .catch(error => console.error(error));
+        }
+    </script>
+</body>
+</html>
