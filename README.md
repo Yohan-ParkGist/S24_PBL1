@@ -11,5 +11,6 @@ web_frontend: app.py 파일을 실행하면 저희의 서류 피드백 기능을
 
 Frontend Examples
 =================
-![Alt text] (/img/example1.png)
+![Feedback system] (./img/example1.png)
+
 이것이 frontend로 구현한 서류 피드백 시스템의 데모입니다.
