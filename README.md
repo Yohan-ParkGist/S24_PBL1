@@ -1,5 +1,5 @@
 # S24_PBL1
-PBL 6조
+GIST, 2024 Spring semester, PBL, Team6
 
 File description
 ================
