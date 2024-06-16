@@ -11,6 +11,18 @@ web_frontend: app.py 파일을 실행하면 저희의 서류 피드백 기능을
 
 Frontend Examples
 =================
-![Feedback system] (./img/example1.png)
 
-이것이 frontend로 구현한 서류 피드백 시스템의 데모입니다.
+<img src="./img/example2.png" width="80%" height="30%" title="px(픽셀) 크기 설정" alt="Feedback demo"></img>
+
+이것이 frontend로 구현한 서류 피드백 시스템의 데모입니다. 여기서 업로드 버튼을 선택하면 피드백을 원하는 서류를 업로드 할 수 있습니다.
+
+<img src="./img/example1.png" width="80%" height="30%" title="px(픽셀) 크기 설정" alt="Feedback demo"></img>
+
+위와 같이 파일 업로드를 진행하면 알림이 뜨게 됩니다.
+
+
+Further development
+==
+저희의 목표는 단순한 서류 피드백 시스템에서 벗어나서, 피드백을 받고 궁금한 점이 있으면 대화를 통해서 추가적인 정보도 얻을수 있는 서류 피드백 특화 챗봇 기능의 구현입니다.
+
+<img src="./img/example3.png" width="80%" height="30%" title="px(픽셀) 크기 설정" alt="Feedback demo"></img>
